@@ -133,25 +133,47 @@ namespace ComicBookLibraryManager.Data
         /// <param name="comicBook">The ComicBook entity instance to add.</param>
         public static void AddComicBook(ComicBook comicBook)
         {
-            // TODO
-        }
+            using (Context context = GetContext())
+            {
+                context.ComicBooks.Add(comicBook);
 
-        /// <summary>
-        /// Updates a comic book.
-        /// </summary>
-        /// <param name="comicBook">The ComicBook entity instance to update.</param>
-        public static void UpdateComicBook(ComicBook comicBook)
-        {
-            // TODO
-        }
+                if(comicBook.Series != null && comicBook.Series.Id >0)
+                {
+                    context.Entry(comicBook.Series).State = EntityState.Unchanged;
+                }
+                foreach( ComicBookArtist artist in comicBook.Artists)
+                {
+                    if (artist.Artist != null && artist.Artist.Id > 0)
+                    {
+                        context.Entry(artist.Artist).State = EntityState.Unchanged;
+                    }
 
-        /// <summary>
-        /// Deletes a comic book.
-        /// </summary>
-        /// <param name="comicBookId">The comic book ID to delete.</param>
-        public static void DeleteComicBook(int comicBookId)
-        {
-            // TODO
+                    if (artist.Role != null && artist.Role.Id > 0)
+                    {
+                        context.Entry(artist.Role).State = EntityState.Unchanged;
+                    }
+                }
+                
+                context.SaveChanges();
+            }
+        }
+            /// <summary>
+            /// Updates a comic book.
+            /// </summary>
+            /// <param name="comicBook">The ComicBook entity instance to update.</param>
+            public static void UpdateComicBook(ComicBook comicBook)
+            {
+                // TODO
+            }
+
+            /// <summary>
+            /// Deletes a comic book.
+            /// </summary>
+            /// <param name="comicBookId">The comic book ID to delete.</param>
+            public static void DeleteComicBook(int comicBookId)
+            {
+                // TODO
+            }
         }
     }
-}
+
