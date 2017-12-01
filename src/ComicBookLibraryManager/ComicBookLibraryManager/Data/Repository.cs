@@ -141,7 +141,7 @@ namespace ComicBookLibraryManager.Data
                 {
                     context.Entry(comicBook.Series).State = EntityState.Unchanged;
                 }
-                foreach( ComicBookArtist artist in comicBook.Artists)
+                foreach(ComicBookArtist artist in comicBook.Artists)
                 {
                     if (artist.Artist != null && artist.Artist.Id > 0)
                     {
@@ -157,23 +157,39 @@ namespace ComicBookLibraryManager.Data
                 context.SaveChanges();
             }
         }
-            /// <summary>
-            /// Updates a comic book.
-            /// </summary>
-            /// <param name="comicBook">The ComicBook entity instance to update.</param>
-            public static void UpdateComicBook(ComicBook comicBook)
+        /// <summary>
+        /// Updates a comic book.
+        /// </summary>
+        /// <param name="comicBook">The ComicBook entity instance to update.</param>
+        public static void UpdateComicBook(ComicBook comicBook)
+        {
+            using (Context context = GetContext())
             {
-                // TODO
-            }
+                context.ComicBooks.Attach(comicBook);
+                var comicBookEntry = context.Entry(comicBook);
+                comicBookEntry.State = EntityState.Modified;
+                //comicBookEntry.Property("IssueNumber").IsModified = false;
 
-            /// <summary>
-            /// Deletes a comic book.
-            /// </summary>
-            /// <param name="comicBookId">The comic book ID to delete.</param>
-            public static void DeleteComicBook(int comicBookId)
-            {
-                // TODO
+                context.SaveChanges();
             }
+                
         }
-    }
 
+        /// <summary>
+        /// Deletes a comic book.
+        /// </summary>
+        /// <param name="comicBookId">The comic book ID to delete.</param>
+        public static void DeleteComicBook(int comicBookId)
+        {
+            using (Context context = GetContext())
+            {
+                var comicBook = new ComicBook() { Id = comicBookId };
+                context.Entry(comicBook).State = EntityState.Deleted;
+
+                context.SaveChanges();
+            }
+
+        }
+        
+    }
+}
